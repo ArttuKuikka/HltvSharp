@@ -74,7 +74,7 @@ namespace HltvApi.Parsing
                 //Team 2 ID and name
                 Team team2Model = new Team();
                 string team2LogoUrl = teamNodes[1].QuerySelector("img").Attributes["src"].Value;
-                team2Model.Id = int.Parse(team1LogoUrl.Split('/').Last());
+                team2Model.Id = int.Parse(team2LogoUrl.Split('/').Last());
                 team2Model.Name = teamNodes[1].QuerySelector("img").Attributes["alt"].Value;
                 model.Team2 = team2Model;
                 model.Team2Score = int.Parse(scoreSpanNodes[1].InnerText);
