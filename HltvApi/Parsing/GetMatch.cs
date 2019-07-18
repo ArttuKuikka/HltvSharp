@@ -93,7 +93,7 @@ namespace HltvApi.Parsing
             List<Demo> demos = new List<Demo>();
             foreach (var demoNode in demoNodes)
             {
-                if (!demoNode.QuerySelector("a").Attributes.Contains("href"))
+                if (demoNode.QuerySelector("a") == null || !demoNode.QuerySelector("a").Attributes.Contains("href"))
                     continue;
 
                 Demo demo = new Demo();
