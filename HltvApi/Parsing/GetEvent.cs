@@ -5,6 +5,7 @@ using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +14,9 @@ namespace HltvApi.Parsing
 {
     public static partial class HltvParser
     {
-        public static Task<FullEvent> GetEvent(int id)
+        public static Task<FullEvent> GetEvent(int id, WebProxy proxy = null)
         {
-            return FetchPage<FullEvent>($"events/{id}/-", ParseEventPage);
+            return FetchPage($"events/{id}/-", ParseEventPage, proxy);
         }
 
         private static FullEvent ParseEventPage(Task<HttpResponseMessage> response)

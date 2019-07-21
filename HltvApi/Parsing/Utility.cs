@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,9 +9,17 @@ namespace HltvApi.Parsing
 {
     public static partial class HltvParser
     {
-        private static async Task<T> FetchPage<T>(string url, Func<Task<HttpResponseMessage>, T> continueWith)
+        private static async Task<T> FetchPage<T>(string url, Func<Task<HttpResponseMessage>, T> continueWith, WebProxy proxy = null)
         {
-            var client = new HttpClient();
+            var httpClientHandler = new HttpClientHandler();
+
+            if (proxy != null)
+            {
+                httpClientHandler.UseProxy = true;
+                httpClientHandler.Proxy = proxy;
+            }
+
+            var client = new HttpClient(httpClientHandler);
             var request = new HttpRequestMessage()
             {
                 RequestUri = new Uri("http://www.hltv.org/" + url),

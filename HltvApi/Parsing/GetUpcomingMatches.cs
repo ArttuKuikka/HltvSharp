@@ -5,6 +5,7 @@ using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +14,9 @@ namespace HltvApi.Parsing
 {
     public static partial class HltvParser
     {
-        public static Task<List<UpcomingMatch>> GetUpcomingMatches()
+        public static Task<List<UpcomingMatch>> GetUpcomingMatches(WebProxy proxy = null)
         {
-            return FetchPage<List<UpcomingMatch>>("matches", ParseMatchesPage);
+            return FetchPage("matches", ParseMatchesPage, proxy);
         }
 
         private static List<UpcomingMatch> ParseMatchesPage(Task<HttpResponseMessage> response)

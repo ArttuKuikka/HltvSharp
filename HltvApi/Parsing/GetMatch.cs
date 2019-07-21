@@ -15,9 +15,9 @@ namespace HltvApi.Parsing
 {
     public static partial class HltvParser
     {
-        public static Task<FullMatch> GetMatch(int id)
+        public static Task<FullMatch> GetMatch(int id, WebProxy proxy = null)
         {
-            return FetchPage<FullMatch>($"matches/{id}/-", (response) => ParseMatchPage(response, id));
+            return FetchPage($"matches/{id}/-", (response) => ParseMatchPage(response, id), proxy);
         }
 
         private static FullMatch ParseMatchPage(Task<HttpResponseMessage> response, int id = 0)
