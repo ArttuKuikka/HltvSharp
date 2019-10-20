@@ -52,7 +52,8 @@ namespace HltvApi.Parsing
                 if (eventImageUrl.ToLowerInvariant().Contains("nologo"))
                     eventModel.Id = null;
                 else
-                    eventModel.Id = int.Parse(eventImageUrl.Split("/").Last().Split(".").First());
+                    eventModel.Id = int.Parse(eventImageUrl.
+                        Split("/").Last().Split(".").First());
 
                 eventModel.Name = resultNode.QuerySelector(".event-name").InnerText;
                 model.Event = eventModel;

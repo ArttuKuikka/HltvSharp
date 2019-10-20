@@ -60,10 +60,14 @@ namespace HltvApi.Parsing
             var relatedEventNodes = document.QuerySelectorAll(".related-event img");
             foreach (var relatedEventNode in relatedEventNodes)
             {
-                Event relatedEventModel = new Event();
-                relatedEventModel.Name = relatedEventNode.Attributes["title"].Value;
-                relatedEventModel.Id = int.Parse(relatedEventNode.Attributes["src"].Value.Split('/').Last().Split(".").First());
-                relatedEvents.Add(relatedEventModel);
+                try
+                {
+                    Event relatedEventModel = new Event();
+                    relatedEventModel.Name = relatedEventNode.Attributes["title"].Value;
+                    relatedEventModel.Id = int.Parse(relatedEventNode.Attributes["src"].Value.Split('/').Last().Split(".").First());
+                    relatedEvents.Add(relatedEventModel);
+                }
+                catch (Exception)  { }
             }
             model.RelatedEvents = relatedEvents.ToArray();
 

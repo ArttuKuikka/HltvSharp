@@ -39,9 +39,16 @@ namespace HltvApi.Parsing
             model.Date = DateTimeFromUnixTimestampMillis(date);
 
             //Match format
-            string preformattedText = document.QuerySelector(".preformatted-text").InnerText;
-            model.Format = preformattedText.Split('\n', StringSplitOptions.RemoveEmptyEntries).First();
-            model.AdditionalInfo = preformattedText.Substring(preformattedText.IndexOf('\n') + 1);
+            try
+            {
+                string preformattedText = document.QuerySelector(".preformatted-text").InnerText;
+                model.Format = preformattedText.Split('\n', StringSplitOptions.RemoveEmptyEntries).First();
+                model.AdditionalInfo = preformattedText.Substring(preformattedText.IndexOf('\n') + 1);
+            }
+            catch (Exception)
+            {
+                model.Format = "Best of 1";
+            }
 
             //Team 1
             Team team1 = new Team();
@@ -152,7 +159,8 @@ namespace HltvApi.Parsing
             {
                 Player player = new Player();
                 player.Name = flagAllignNode.QuerySelector(".text-ellipsis").InnerText;
-                player.Id = int.Parse(flagAllignNode.ParentNode.Attributes["href"].Value.Split('/', StringSplitOptions.RemoveEmptyEntries)[1]);
+                if (flagAllignNode.ParentNode.Attributes["href"] != null && flagAllignNode.ParentNode.Attributes["href"].Value != null)
+                    player.Id = int.Parse(flagAllignNode.ParentNode.Attributes["href"].Value.Split('/', StringSplitOptions.RemoveEmptyEntries)[1]);
                 team1Players.Add(player);
             }
             model.Team1Players = team1Players.ToArray();
@@ -165,7 +173,8 @@ namespace HltvApi.Parsing
             {
                 Player player = new Player();
                 player.Name = flagAllignNode.QuerySelector(".text-ellipsis").InnerText;
-                player.Id = int.Parse(flagAllignNode.ParentNode.Attributes["href"].Value.Split('/', StringSplitOptions.RemoveEmptyEntries)[1]);
+                if (flagAllignNode.ParentNode.Attributes["href"] != null && flagAllignNode.ParentNode.Attributes["href"].Value != null)
+                    player.Id = int.Parse(flagAllignNode.ParentNode.Attributes["href"].Value.Split('/', StringSplitOptions.RemoveEmptyEntries)[1]);
                 team2Players.Add(player);
             }
             model.Team2Players = team2Players.ToArray();
