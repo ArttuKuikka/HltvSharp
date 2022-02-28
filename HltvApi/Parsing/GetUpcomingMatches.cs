@@ -29,7 +29,7 @@ namespace HltvApi.Parsing
 
             HtmlNode document = html.DocumentNode;
 
-            var upcomingMatchNodes = document.QuerySelectorAll(".upcoming-match");
+            var upcomingMatchNodes = document.QuerySelectorAll(".upcomingMatch");
 
             List<UpcomingMatch> upcomingMatches = new List<UpcomingMatch>();
 
@@ -40,7 +40,7 @@ namespace HltvApi.Parsing
                     UpcomingMatch model = new UpcomingMatch();
 
                     //Match ID
-                    string matchPageUrl = upcomingMatchNode.Attributes["href"].Value;
+                    string matchPageUrl = upcomingMatchNode.FirstChild.Attributes["href"].Value;
                     model.Id = int.Parse(matchPageUrl.Split('/', StringSplitOptions.RemoveEmptyEntries)[1]);
 
                     //Match date
@@ -49,33 +49,41 @@ namespace HltvApi.Parsing
 
                     //Event ID and name
                     Event eventModel = new Event();
-                    string eventImageUrl = upcomingMatchNode.QuerySelector(".event-logo").Attributes["src"].Value;
-                    eventModel.Id = int.Parse(eventImageUrl.Split("/").Last().Split(".").First());
-                    eventModel.Name = upcomingMatchNode.QuerySelector(".event-name").InnerText;
-                    model.Event = eventModel;
+
+                    eventModel.Id = 0; //couldn't get the id 
+                    if(upcomingMatchNode.QuerySelector(".matchEventName") != null)
+                    {
+                        eventModel.Name = upcomingMatchNode.QuerySelector(".matchEventName").InnerText;
+                        model.Event = eventModel;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    
 
                     //Number of stars
                     model.Stars = upcomingMatchNode.QuerySelectorAll(".stars i").Count();
 
-                    var teamNodes = upcomingMatchNode.QuerySelectorAll(".team-cell").ToList();
+                    
                     var resultScoreNode = upcomingMatchNode.QuerySelector(".result-score");
 
                     //Team 1 ID and name
                     Team team1Model = new Team();
-                    string team1LogoUrl = teamNodes[0].QuerySelector("img").Attributes["src"].Value;
-                    team1Model.Id = int.Parse(team1LogoUrl.Split('/').Last());
-                    team1Model.Name = teamNodes[0].QuerySelector("img").Attributes["alt"].Value;
+
+                    team1Model.Id = 0; //couldn't get the id 
+                    team1Model.Name = document.SelectNodes("//div[@class='matchTeam team1']")[0].ChildNodes[3].InnerText;
                     model.Team1 = team1Model;
 
                     //Team 2 ID and name
                     Team team2Model = new Team();
-                    string team2LogoUrl = teamNodes[1].QuerySelector("img").Attributes["src"].Value;
-                    team2Model.Id = int.Parse(team1LogoUrl.Split('/').Last());
-                    team2Model.Name = teamNodes[1].QuerySelector("img").Attributes["alt"].Value;
+
+                    team2Model.Id = 0; //couldn't get the id 
+                    team2Model.Name = document.SelectNodes("//div[@class='matchTeam team2']")[0].ChildNodes[3].InnerText;
                     model.Team2 = team2Model;
 
                     //Map and format
-                    string mapText = upcomingMatchNode.QuerySelector(".map-text").InnerText;
+                    string mapText = upcomingMatchNode.QuerySelector(".matchMeta").InnerText;
                     if (mapText.Contains("bo"))
                         model.Format = mapText;
                     else
@@ -88,7 +96,7 @@ namespace HltvApi.Parsing
                 }
                 catch (Exception)
                 {
-
+                    continue;
                 }
             }
             return upcomingMatches;

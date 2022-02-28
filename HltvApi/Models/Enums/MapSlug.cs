@@ -20,6 +20,8 @@ namespace HltvApi.Models.Enums
             { "tcn", "Tuscan" },
             { "vtg", "Vertigo" },
             { "-", "Default" },
+            { "def", "Default" },
+            { "anc", "Ancient" },
         };
     }
 }

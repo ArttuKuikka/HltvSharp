@@ -50,15 +50,17 @@ namespace HltvApi.Parsing
                 model.Format = "Best of 1";
             }
 
+
+           
             //Team 1
             Team team1 = new Team();
-            team1.Id = int.Parse(document.QuerySelectorAll(".team img.logo").First().Attributes["src"].Value.Split('/').Last());
+            team1.Id = int.Parse(document.QuerySelectorAll(".team a").First().Attributes["href"].Value.Replace("/team/", string.Empty).Split('/').First());
             team1.Name = document.QuerySelectorAll(".team img.logo").First().Attributes["title"].Value;
             model.Team1 = team1;
 
             //Team 2
             Team team2 = new Team();
-            team2.Id = int.Parse(document.QuerySelectorAll(".team img.logo").Last().Attributes["src"].Value.Split('/').Last());
+            team2.Id = int.Parse(document.QuerySelectorAll(".team a").First().Attributes["href"].Value.Replace("/team/", string.Empty).Split('/').First());
             team2.Name = document.QuerySelectorAll(".team img.logo").Last().Attributes["title"].Value;
             model.Team2 = team2;
 

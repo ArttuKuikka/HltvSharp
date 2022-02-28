@@ -37,11 +37,12 @@ namespace HltvApi.Parsing
             model.DateStart = DateTimeFromUnixTimestampMillis(dateStart);
             model.DateEnd = DateTimeFromUnixTimestampMillis(dateFinish);
 
+            
             //Event id
-            model.Id = int.Parse(document.QuerySelector(".event-header-component a").Attributes["href"].Value.Split('/', StringSplitOptions.RemoveEmptyEntries)[1]);
+            model.Id = int.Parse(document.SelectNodes("//meta[@property='og:url']/@content")[0].GetAttributeValue("content", String.Empty).Split('/', StringSplitOptions.RemoveEmptyEntries)[3]);
 
             //Event name
-            model.Name = document.QuerySelector(".eventname").InnerText;
+            model.Name = document.QuerySelector(".event-hub-title").InnerText;
 
             //Event prizepool
             model.PrizePool = document.QuerySelector(".prizepool.text-ellipsis").InnerText;

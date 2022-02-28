@@ -12,10 +12,17 @@ namespace HltvApi
 {
     class Program
     {
-        static void Main(string[] args)
+        static async System.Threading.Tasks.Task Main(string[] args)
         {
+           
+
             var task = HltvParser.GetMatch(2333833);
             task.Wait();
+
+            Console.WriteLine(task.Result.Team1.Name);
+            Console.WriteLine(task.Result.Team2.Name);
+
+           
         }
     }
 }
