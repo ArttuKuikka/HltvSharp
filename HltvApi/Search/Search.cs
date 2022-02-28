@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using HltvApi.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
