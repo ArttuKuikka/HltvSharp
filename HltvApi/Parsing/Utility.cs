@@ -9,7 +9,7 @@ namespace HltvApi.Parsing
 {
     public static partial class HltvParser
     {
-        private static async Task<T> FetchPage<T>(string url, Func<Task<HttpResponseMessage>, T> continueWith, WebProxy proxy = null)
+        public static async Task<T> FetchPage<T>(string url, Func<Task<HttpResponseMessage>, T> continueWith, WebProxy proxy = null)
         {
             var httpClientHandler = new HttpClientHandler();
 

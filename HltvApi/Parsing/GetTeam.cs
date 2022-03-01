@@ -13,7 +13,7 @@ namespace HltvApi.Parsing
 {
     public static partial class HltvParser
     {
-        public static Task<TeamInfo> GetInfo(int teamid, WebProxy proxy = null)
+        public static Task<TeamInfo> GetTeam(int teamid, WebProxy proxy = null)
         {
             return FetchPage($"team/{teamid}/-", (response) => GetInfoParse(response, teamid), proxy);
         }
@@ -31,8 +31,8 @@ namespace HltvApi.Parsing
 
             var teamInfo = new TeamInfo();
 
-            
-           
+
+
 
             return teamInfo;
         }
@@ -48,7 +48,7 @@ namespace HltvApi.Parsing
             var teamPlayerInfoList = new List<TeamPlayerInfo>();
 
             //Get html
-            
+
             return teamPlayerInfoList;
         }
 
@@ -62,9 +62,9 @@ namespace HltvApi.Parsing
 
             var RecentMatchItemList = new List<RecentMatchItem>();
 
-            
 
-           
+
+
             var RawHtml = "vaihda"; //VAIHDA
 
             HtmlDocument doc = new HtmlDocument();
@@ -84,8 +84,8 @@ namespace HltvApi.Parsing
                         HtmlNode datecell = teamrow.SelectSingleNode("//td[@class='" + "date-cell" + "']");
 
                         Console.WriteLine(datecell.Attributes["data-unix"].Value);
-                    } 
-                   
+                    }
+
                 }
 
 
@@ -93,22 +93,22 @@ namespace HltvApi.Parsing
 
 
 
-                return RecentMatchItemList;
+            return RecentMatchItemList;
         }
 
         private static async Task<List<UpcomingMatchItem>> GetUpcomingMatches(TeamSearchItem team) //trash
         {
-            if(team == null) { return null; }
+            if (team == null) { return null; }
 
-            if(team.Id == 0) { return null; }
+            if (team.Id == 0) { return null; }
 
-            if(team.Name == null) { return null; }
+            if (team.Name == null) { return null; }
 
 
-            
+
             var list = new List<UpcomingMatchItem>();
 
-           
+
 
             return list;
         }
@@ -120,8 +120,4 @@ namespace HltvApi.Parsing
             return dateTime;
         }
     }
-
-    
-
-    
 }
