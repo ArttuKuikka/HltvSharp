@@ -33,7 +33,7 @@ namespace HltvApi.Parsing
             FullMatch model = new FullMatch();
 
             model.Id = id;
-
+            
             //Match date
             long date = long.Parse(document.QuerySelector(".timeAndEvent .date").Attributes["data-unix"].Value);
             model.Date = DateTimeFromUnixTimestampMillis(date);

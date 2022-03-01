@@ -1,4 +1,5 @@
-﻿using HltvApi.Models;
+﻿using Fizzler.Systems.HtmlAgilityPack;
+using HltvApi.Models;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -13,13 +14,15 @@ namespace HltvApi.Parsing
 {
     public static partial class HltvParser
     {
-        public static Task<TeamInfo> GetTeam(int teamid, WebProxy proxy = null)
+        public static Task<Team> GetTeam(int teamid, WebProxy proxy = null)
         {
             return FetchPage($"team/{teamid}/-", (response) => GetInfoParse(response, teamid), proxy);
         }
 
-        private static TeamInfo GetInfoParse(Task<HttpResponseMessage> response, int id = 0)
+        private static Team GetInfoParse(Task<HttpResponseMessage> response, int id = 0)
         {
+
+            //load html
             var content = response.Result.Content;
             string htmlContent = content.ReadAsStringAsync().Result;
 
@@ -28,96 +31,148 @@ namespace HltvApi.Parsing
 
             HtmlNode document = html.DocumentNode;
 
+            //start of actual code
+            var team = new Team();
 
-            var teamInfo = new TeamInfo();
+            //name
+            team.Name = document.QuerySelector(".profile-team-name").InnerText;
 
+            //country
+            team.Country = document.QuerySelector(".team-country").InnerText;
 
+            //id
+            team.Id = int.Parse(document.SelectNodes("//link[@rel='canonical']")[0].Attributes["href"].Value.Split('/')[4]);
 
+            //Team stats
+            var profileteamstats = document.SelectNodes("//div[@class='profile-team-stat']");
 
-            return teamInfo;
-        }
-
-        private static async Task<List<TeamPlayerInfo>> GetPlayers(TeamSearchItem team)
-        {
-            if (team == null) { return null; }
-
-            if (team.Id == 0) { return null; }
-
-            if (team.Name == null) { return null; }
-
-            var teamPlayerInfoList = new List<TeamPlayerInfo>();
-
-            //Get html
-
-            return teamPlayerInfoList;
-        }
-
-        private static async Task<List<RecentMatchItem>> GetRecentMatches(TeamSearchItem team)
-        {
-            if (team == null) { return null; }
-
-            if (team.Id == 0) { return null; }
-
-            if (team.Name == null) { return null; }
-
-            var RecentMatchItemList = new List<RecentMatchItem>();
-
-
-
-
-            var RawHtml = "vaihda"; //VAIHDA
-
-            HtmlDocument doc = new HtmlDocument();
-
-
-
-
-            doc.LoadHtml(RawHtml);
-
-            foreach (HtmlNode table in doc.DocumentNode.SelectNodes("//table[@class='" + "table-container match-table" + "']").Skip(1))
+            //WorldRanking
+            team.WorldRank = int.Parse(profileteamstats[0].ChildNodes["span"].ChildNodes["a"].InnerText.Replace("#", string.Empty));
+            
+            //AveragePlayerAge
+            if(profileteamstats[2] != null)
             {
-                foreach (HtmlNode row in table.SelectNodes("tbody"))
+                if(profileteamstats[2].InnerText.Contains("Average player age"))
                 {
-
-                    foreach (HtmlNode teamrow in row.SelectNodes("//tr[@class='" + "team-row" + "']"))
-                    {
-                        HtmlNode datecell = teamrow.SelectSingleNode("//td[@class='" + "date-cell" + "']");
-
-                        Console.WriteLine(datecell.Attributes["data-unix"].Value);
-                    }
-
+                    team.AveragePlayerAge = double.Parse(profileteamstats[2].ChildNodes["span"].InnerText.Replace(".", ","));
                 }
+            }
 
+            //Coach
+            if(profileteamstats[3] != null)
+            {
+                if (profileteamstats[3].InnerText.Contains("Coach"))
+                {
+                    var Coach = new Coach();
 
+                    //id
+                    Coach.id = int.Parse(profileteamstats[3].ChildNodes["a"].Attributes["href"].Value.Split("/")[2]);
+
+                    //country
+                    Coach.Country = profileteamstats[3].ChildNodes["a"].ChildNodes["img"].Attributes["title"].Value;
+
+                    //firstname
+                    Coach.Name = profileteamstats[3].ChildNodes["a"].InnerText;
+
+                    team.Coach = Coach;
+                }
             }
 
 
+            Console.WriteLine(team);
 
-            return RecentMatchItemList;
+            team.Players = GetPlayers(document);
+
+            team.RecentMatches = GetRecentMatches(document);
+
+            team.UpcomingMatches = GetUpcomingMatches(document);
+
+            return team;
         }
 
-        private static async Task<List<UpcomingMatchItem>> GetUpcomingMatches(TeamSearchItem team) //trash
+        private static List<Player> GetPlayers(HtmlNode document)
         {
-            if (team == null) { return null; }
+            var PlayerList = new List<Player>();
 
-            if (team.Id == 0) { return null; }
+            var table = document.SelectNodes("//table[@class='table-container players-table']")[0];
 
-            if (team.Name == null) { return null; }
+            HtmlNode tbody = null;
+            if(table.SelectNodes("//tbody")[1] == null)
+            {
+                tbody = table.SelectNodes("//tbody")[0];
+            }
+            else
+            {
+                tbody = table.SelectNodes("//tbody")[1];
+            }
+
+            var tbodyhtml = new HtmlDocument();
+            tbodyhtml.LoadHtml(tbody.InnerHtml); 
+
+            HtmlNode tb = tbodyhtml.DocumentNode;
+
+            foreach (var PlayerCell in tb.SelectNodes("//tr").Skip(1)) //idk why it doesnt work if i use tbody maybe bug in hmtl agility pack
+            {
+                var Player = new Player();
 
 
+                //id
+                Player.Id = int.Parse(PlayerCell.ChildNodes["td"].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
 
-            var list = new List<UpcomingMatchItem>();
+                //name
+                Player.Name = PlayerCell.SelectNodes("//img[@class='playerBox-bodyshot']")[0].Attributes["title"].Value;
+
+                //Player image
+                Player.playerImgUrl = PlayerCell.SelectNodes("//img[@class='playerBox-bodyshot']")[0].Attributes["src"].Value;
+
+                //Country
+                Player.Country = PlayerCell.SelectNodes("//img[@class='gtSmartphone-only flag']")[0].Attributes["title"].Value;
+
+                //status
+                Player.status = PlayerCell.QuerySelector(".player-status").InnerText;
+
+                //Time on Team
+                Player.timeOnTeam = PlayerCell.SelectNodes("//td")[2].ChildNodes["div"].InnerText;
+
+                //Maps played
+                Player.mapsPlayed = int.Parse(PlayerCell.SelectNodes("//td")[3].ChildNodes["div"].InnerText);
+
+                //Rating
+                Player.rating = double.Parse(PlayerCell.SelectNodes("//td")[4].ChildNodes["div"].InnerText.Replace(".",","));
+
+                PlayerList.Add(Player);
+            }
 
 
-
-            return list;
+            return PlayerList;
         }
-        private static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+
+        private static List<Match> GetRecentMatches(HtmlNode document)
         {
-            // Unix timestamp is seconds past epoch
-            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dateTime;
+           
+
+            var MatchList = new List<Match>();
+
+
+
+
+
+
+
+            return MatchList;
         }
+
+        private static List<Match> GetUpcomingMatches(HtmlNode document)
+        {
+           
+
+
+            var MatchList = new List<Match>();
+
+
+
+            return MatchList;
+        }
+        
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HltvApi.Models
 {
-    public class RecentMatchItem
+    public class Match
     {
         public string date { get; set; }
         public DateTime DateTime { get; set; }

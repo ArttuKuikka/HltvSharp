@@ -16,11 +16,11 @@ namespace HltvApi
         {
            
 
-            var task = HltvParser.GetMatch(2333833);
+            var task = HltvParser.GetTeam(4869);
             task.Wait();
             
-            Console.WriteLine(task.Result.Team1.Name);
-            Console.WriteLine(task.Result.Team2.Name);
+            Console.WriteLine(task.Result.Name);
+            Console.WriteLine(task.Result.WorldRank);
 
            
         }

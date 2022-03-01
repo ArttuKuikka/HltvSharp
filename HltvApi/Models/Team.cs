@@ -6,7 +6,14 @@ namespace HltvApi.Models
 {
     public class Team
     {
-        public int Id { get; set; }
         public string Name { get; set; }
+        public string Country { get; set; }
+        public int Id { get; set; }
+        public int WorldRank { get; set; }
+        public double AveragePlayerAge { get; set; }
+        public Coach Coach { get; set; }
+        public List<Player> Players { get; set; }
+        public List<Match> RecentMatches { get; set; }
+        public List<Match> UpcomingMatches { get; set; }
     }
 }
