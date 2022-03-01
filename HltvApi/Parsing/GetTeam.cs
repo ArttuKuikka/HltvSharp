@@ -147,27 +147,52 @@ namespace HltvApi.Parsing
             return PlayerList;
         }
 
-        private static List<Match> GetRecentMatches(HtmlNode document)
+        private static List<FullMatch> GetRecentMatches(HtmlNode document)
         {
-           
 
-            var MatchList = new List<Match>();
+            var MatchList = new List<FullMatch>();
 
+            var table = document.SelectNodes("//table[@class='table-container match-table']")[0];
 
+            var tbody = table.SelectNodes("//tbody")[4];
 
+            var tbodyhtml = new HtmlDocument();
+            tbodyhtml.LoadHtml(tbody.InnerHtml);
 
+            HtmlNode tb = tbodyhtml.DocumentNode;
+
+            foreach (var teamrow in tb.QuerySelectorAll(".team-row"))
+            {
+                var id = int.Parse(teamrow.SelectNodes("//td")[2].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+
+                MatchList.Add(GetMatch(id).Result);
+            }
 
 
 
             return MatchList;
         }
 
-        private static List<Match> GetUpcomingMatches(HtmlNode document)
+        private static List<FullMatch> GetUpcomingMatches(HtmlNode document)
         {
-           
 
+            var MatchList = new List<FullMatch>();
 
-            var MatchList = new List<Match>();
+            var table = document.SelectNodes("//table[@class='table-container match-table']")[0];
+
+            var tbody = table.SelectNodes("//tbody")[3];
+
+            var tbodyhtml = new HtmlDocument();
+            tbodyhtml.LoadHtml(tbody.InnerHtml);
+
+            HtmlNode tb = tbodyhtml.DocumentNode; //tee for looppi
+
+            foreach (var teamrow in tb.QuerySelectorAll(".team-row"))
+            {
+                var id = int.Parse(teamrow.SelectNodes("//td")[2].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+
+                MatchList.Add(GetMatch(id).Result);
+            }
 
 
 

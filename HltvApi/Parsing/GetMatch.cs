@@ -65,10 +65,18 @@ namespace HltvApi.Parsing
             model.Team2 = team2;
 
             //Winning team
-            if (document.QuerySelector(".team1-gradient > div").HasClass("won"))
-                model.WinningTeam = team1;
-            if (document.QuerySelector(".team2-gradient > div").HasClass("won"))
-                model.WinningTeam = team2;
+            if(document.QuerySelector(".team1-gradient > div") != null)
+            {
+                if (document.QuerySelector(".team1-gradient > div").HasClass("won"))
+                    model.WinningTeam = team1;
+            }
+
+            if (document.QuerySelector(".team2-gradient > div") != null)
+            {
+                if (document.QuerySelector(".team2-gradient > div").HasClass("won"))
+                    model.WinningTeam = team2;
+            }
+                
 
             //Event
             Event matchEvent = new Event();
@@ -84,17 +92,25 @@ namespace HltvApi.Parsing
             {
                 MapResult mapResult = new MapResult();
                 mapResult.Name = mapHolderNode.QuerySelector(".mapname").InnerText;
-                var resultsNode = mapHolderNode.QuerySelector(".results");
-                var scoreNodes = resultsNode.QuerySelectorAll(".results-team-score").ToList();
-                if (scoreNodes.Count > 0 && scoreNodes[0].InnerText != "-")
+                if(mapHolderNode.QuerySelector(".results") != null)
                 {
-                    mapResult.Team1Score = int.Parse(scoreNodes[0].InnerText);
-                    mapResult.Team2Score = int.Parse(scoreNodes[1].InnerText);
-                    if (mapHolderNode.QuerySelector(".results-stats") != null)
-                        mapResult.StatsId = int.Parse(mapHolderNode.QuerySelector(".results-stats").Attributes["href"].Value.Split('/', StringSplitOptions.RemoveEmptyEntries)[3]);
+                    var resultsNode = mapHolderNode.QuerySelector(".results");
+                    if (resultsNode.QuerySelectorAll(".results-team-score") != null)
+                    {
+                        var scoreNodes = resultsNode.QuerySelectorAll(".results-team-score").ToList();
+                        if (scoreNodes.Count > 0 && scoreNodes[0].InnerText != "-")
+                        {
+                            mapResult.Team1Score = int.Parse(scoreNodes[0].InnerText);
+                            mapResult.Team2Score = int.Parse(scoreNodes[1].InnerText);
+                            if (mapHolderNode.QuerySelector(".results-stats") != null)
+                                mapResult.StatsId = int.Parse(mapHolderNode.QuerySelector(".results-stats").Attributes["href"].Value.Split('/', StringSplitOptions.RemoveEmptyEntries)[3]);
+                        }
+
+                        mapResults.Add(mapResult);
+                    }
                 }
+               
                 
-                mapResults.Add(mapResult);
             }
             model.Maps = mapResults.ToArray();
 

@@ -13,7 +13,7 @@ namespace HltvApi.Models
         public double AveragePlayerAge { get; set; }
         public Coach Coach { get; set; }
         public List<Player> Players { get; set; }
-        public List<Match> RecentMatches { get; set; }
-        public List<Match> UpcomingMatches { get; set; }
+        public List<FullMatch> RecentMatches { get; set; }
+        public List<FullMatch> UpcomingMatches { get; set; }
     }
 }

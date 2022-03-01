@@ -6,8 +6,8 @@ namespace HltvApi.Models
 {
     public class Match
     {
-        public string date { get; set; }
-        public DateTime DateTime { get; set; }
+        
+        public DateTime date { get; set; }
         public string team1name { get; set; }
         public string team2name { get; set; }
 
