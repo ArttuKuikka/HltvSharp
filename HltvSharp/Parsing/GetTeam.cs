@@ -111,7 +111,7 @@ namespace HltvSharp.Parsing
 
             HtmlNode tb = tbodyhtml.DocumentNode;
 
-            foreach (var PlayerCellFE in tb.SelectNodes("//tr")) //idk why it doesnt work if i use tbody maybe bug in hmtl agility pack
+            foreach (var PlayerCellFE in tb.SelectNodes("//tr")) 
             {
                 var Player = new Player();
 
