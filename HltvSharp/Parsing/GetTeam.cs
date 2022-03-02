@@ -180,54 +180,71 @@ namespace HltvSharp.Parsing
 
             var table = document.SelectNodes("//table[@class='table-container match-table']")[0];
 
-            var tbody = table.SelectNodes("//tbody")[4];
-
-            var tbodyhtml = new HtmlDocument();
-            tbodyhtml.LoadHtml(tbody.InnerHtml);
-
-            HtmlNode tb = tbodyhtml.DocumentNode;
-
-            foreach (var teamrow in tb.QuerySelectorAll(".team-row")) //tee for loop että saa kaikki tablet
+            for (var i = 4; i < 10; i++)
             {
-                var Match = new Match();
+                try
+                {
+                    if (table.SelectNodes("//tbody")[i] == null) { continue; }
+                }
+                catch
+                {
+                    continue;
+                }
 
-                //Date
-                var date = long.Parse(teamrow.ChildNodes["td"].ChildNodes["span"].Attributes["data-unix"].Value);
-                Match.date = DateTimeFromUnixTimestampMillis(date);
+                var tbody = table.SelectNodes("//tbody")[i];
 
-                var teamcell = teamrow.SelectNodes("//td[@class='team-center-cell']");
+                var tbodyhtml = new HtmlDocument();
+                tbodyhtml.LoadHtml(tbody.InnerHtml);
 
-                //Team 1 name
-                Match.team1name = teamcell[0].ChildNodes["div"].ChildNodes["a"].InnerText;
+                HtmlNode tb = tbodyhtml.DocumentNode;
 
-                //team 1 id 
-                Match.team1id = int.Parse(teamcell[0].ChildNodes["div"].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+                foreach (var teamrow in tb.QuerySelectorAll(".team-row")) //tee for loop että saa kaikki tablet
+                {
+                    var Match = new Match();
 
-                //team 1 icon url
-                Match.team1iconurl = teamcell[0].ChildNodes["div"].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
+                    //Date
+                    var date = long.Parse(teamrow.ChildNodes["td"].ChildNodes["span"].Attributes["data-unix"].Value);
+                    Match.date = DateTimeFromUnixTimestampMillis(date);
 
-                //team 2 name
-                Match.team2name = teamcell[0].ChildNodes[5].ChildNodes["a"].InnerText;
+                    var K = new HtmlDocument();
+                    K.LoadHtml(teamrow.InnerHtml);
 
-                //team 2 id
-                Match.team2id = int.Parse(teamcell[0].ChildNodes[5].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+                    var s = K.DocumentNode;
 
-                //team 2 icon url
-                Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
+                    var teamcell = s.SelectNodes("//td[@class='team-center-cell']");
+
+                    //Team 1 name
+                    Match.team1name = teamcell[0].ChildNodes["div"].ChildNodes["a"].InnerText;
+
+                    //team 1 id 
+                    Match.team1id = int.Parse(teamcell[0].ChildNodes["div"].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+
+                    //team 1 icon url
+                    Match.team1iconurl = teamcell[0].ChildNodes["div"].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
+
+                    //team 2 name
+                    Match.team2name = teamcell[0].ChildNodes[5].ChildNodes["a"].InnerText;
+
+                    //team 2 id
+                    Match.team2id = int.Parse(teamcell[0].ChildNodes[5].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+
+                    //team 2 icon url
+                    Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
 
 
-                //team 1 score
-                Match.team1Score = int.Parse(teamcell[0].ChildNodes[3].ChildNodes[0].InnerText);
+                    //team 1 score
+                    Match.team1Score = int.Parse(teamcell[0].ChildNodes[3].ChildNodes[0].InnerText);
 
-                //team 2 score
-                Match.team2Score = int.Parse(teamcell[0].ChildNodes[3].ChildNodes[2].InnerText);
+                    //team 2 score
+                    Match.team2Score = int.Parse(teamcell[0].ChildNodes[3].ChildNodes[2].InnerText);
 
 
-                MatchList.Add(Match);
+                    MatchList.Add(Match);
+                }
+
+
+
             }
-
-
-
             return MatchList;
         }
 
