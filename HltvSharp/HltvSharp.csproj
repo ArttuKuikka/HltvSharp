@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>HltvApi</RootNamespace>
+    <RootNamespace>HltvSharp</RootNamespace>
     <Nullable>disable</Nullable>
     <Authors>Arttu Kuikka</Authors>
     <RepositoryUrl>https://github.com/ArttuKuikka/HltvSharp</RepositoryUrl>
