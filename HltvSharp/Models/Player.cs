@@ -14,5 +14,9 @@ namespace HltvSharp.Models
         public string timeOnTeam { get; set; }
         public int mapsPlayed { get; set; }
         public double rating { get; set; }
+        public int age { get; set; }
+        public string currentTeam { get; set; }
+        public List<Team> teams { get; set; }
+        public List<Match> matches { get; set; }
     }
 }

@@ -14,13 +14,14 @@ namespace HltvSharp
     {
         static async System.Threading.Tasks.Task Main(string[] args)
         {
-           
+            var Search = new HltvSharp.Search();
+            var id = Search.Players("allu");
 
-            var task = HltvParser.GetTeam(4869);
+            var task = HltvParser.GetPlayer(id.Result[0].id);
             task.Wait();
             
             Console.WriteLine(task.Result.Name);
-            Console.WriteLine(task.Result.WorldRank);
+            
 
            
         }
