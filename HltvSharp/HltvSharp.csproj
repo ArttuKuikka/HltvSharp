@@ -3,8 +3,22 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>HltvSharp</RootNamespace>
+    <RootNamespace>HltvApi</RootNamespace>
+    <Nullable>disable</Nullable>
+    <Authors>Arttu Kuikka</Authors>
+    <RepositoryUrl>https://github.com/ArttuKuikka/HltvSharp</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/ArttuKuikka/HltvSharp</PackageProjectUrl>
+    <Description>An unofficial C# API for scraping data from hltv.org</Description>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageIcon>logo.png</PackageIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\Downloads\logo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Fizzler.Systems.HtmlAgilityPack" Version="1.2.1" />

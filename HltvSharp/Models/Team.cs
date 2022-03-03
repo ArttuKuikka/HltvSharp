@@ -11,9 +11,10 @@ namespace HltvSharp.Models
         public int Id { get; set; }
         public int WorldRank { get; set; }
         public double AveragePlayerAge { get; set; }
+        public double winRateProcentage { get; set; }
         public Coach Coach { get; set; }
         public List<Player> Players { get; set; }
-        public List<FullMatch> RecentMatches { get; set; }
-        public List<FullMatch> UpcomingMatches { get; set; }
+        public List<Match> RecentMatches { get; set; }
+        public List<Match> UpcomingMatches { get; set; }
     }
 }

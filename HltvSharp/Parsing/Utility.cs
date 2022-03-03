@@ -26,9 +26,10 @@ namespace HltvSharp.Parsing
                 Method = HttpMethod.Get,
             };
 
-            request.Headers.Add("Referer", "https://www.hltv.org/stats");
-            request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0");
+            request.Headers.Add("Referer", "https://www.hltv.org/");
+            request.Headers.Add("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36");
             T result = await client.SendAsync(request).ContinueWith((response) => continueWith(response));
+
             return result;
         }
 
