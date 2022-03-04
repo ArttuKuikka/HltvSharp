@@ -15,7 +15,7 @@ namespace HltvSharp
         static async System.Threading.Tasks.Task Main(string[] args)
         {
             var Search = new HltvSharp.Search();
-            var id = Search.Players("allu");
+            var id = Search.Players("snappi");
 
             var task = HltvParser.GetPlayer(id.Result[0].id);
             task.Wait();

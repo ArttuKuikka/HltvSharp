@@ -56,6 +56,10 @@ namespace HltvSharp.Parsing
 
             player.teams = GetTeams(document);
 
+            player.upcomingMatches = GetUpcomingPlayerMatches(document);
+
+            player.recentMatches = GetRecentPlayerMatches(document);
+
             return player;
         }
         
@@ -63,14 +67,192 @@ namespace HltvSharp.Parsing
         {
             List<Team> teams = new List<Team>();
 
+            var table = document.QuerySelector(".team-breakdown");
+            if(table == null) { return null; }
+
+            var teamlist = table.QuerySelectorAll(".past-team");
+
+            foreach (var team in teamlist)
+            {
+                var NewTeam = new Team();
+
+                NewTeam.Name = team.QuerySelector(".team-name-cell").InnerText.Replace("\n", string.Empty);
+
+                NewTeam.Id = int.Parse(team.QuerySelector(".team-name-cell").ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+
+                var time = new TimePeriod();
+                var from = long.Parse(team.QuerySelector(".time-period-cell").ChildNodes[0].Attributes["data-unix"].Value);
+                var to = long.Parse(team.QuerySelector(".time-period-cell").ChildNodes[2].Attributes["data-unix"].Value);
+                time.from = DateTimeFromUnixTimestampMillis(from);
+                time.to = DateTimeFromUnixTimestampMillis(to);
+                NewTeam.timePeriod = time;
+
+
+                teams.Add(NewTeam);
+            }
+
             return teams;
         }
 
-        private static List<Models.Match> GetMatches(HtmlNode document)
+        private static List<Models.Match> GetUpcomingPlayerMatches(HtmlNode document)
         {
-            List<Models.Match> matches = new List<Models.Match>();
 
-            return matches;
+            var MatchList = new List<Models.Match>();
+
+            var table = document.SelectNodes("//table[@class='table-container match-table']")[0];
+            var ht = new HtmlDocument();
+            ht.LoadHtml(table.InnerHtml);
+
+            table = ht.DocumentNode;
+
+            for (var i = 0; i < 10; i++)
+            {
+                try
+                {
+                    if (table.SelectNodes("//tbody")[i] == null) { continue; }
+                }
+                catch
+                {
+                    continue;
+                }
+
+                var tbody = table.SelectNodes("//tbody")[i];
+
+
+
+                var tbodyhtml = new HtmlDocument();
+                tbodyhtml.LoadHtml(tbody.InnerHtml);
+
+                HtmlNode tb = tbodyhtml.DocumentNode;
+
+                foreach (var teamrow in tb.QuerySelectorAll(".team-row"))
+                {
+                    var Match = new Models.Match();
+
+                    //Date
+                    var date = long.Parse(teamrow.ChildNodes["td"].ChildNodes["span"].Attributes["data-unix"].Value);
+                    Match.date = DateTimeFromUnixTimestampMillis(date);
+
+                    var K = new HtmlDocument();
+                    K.LoadHtml(teamrow.InnerHtml);
+
+                    var s = K.DocumentNode;
+
+                    var teamcell = s.SelectNodes("//td[@class='team-center-cell']");
+
+                    //Team 1 name
+                    Match.team1name = teamcell[0].ChildNodes["div"].ChildNodes["a"].InnerText;
+
+                    //team 1 id 
+                    Match.team1id = int.Parse(teamcell[0].ChildNodes["div"].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+
+                    //team 1 icon url
+                    Match.team1iconurl = teamcell[0].ChildNodes["div"].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
+
+                    //team 2 name
+                    Match.team2name = teamcell[0].ChildNodes[5].ChildNodes["a"].InnerText;
+
+                    //team 2 id
+                    Match.team2id = int.Parse(teamcell[0].ChildNodes[5].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+
+                    //team 2 icon url
+                    Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
+
+
+
+
+                    MatchList.Add(Match);
+                }
+
+
+
+            }
+            return MatchList;
+        }
+
+
+
+
+        private static List<Models.Match> GetRecentPlayerMatches(HtmlNode document)
+        {
+
+            var MatchList = new List<Models.Match>();
+
+            var table = document.SelectNodes("//table[@class='table-container match-table']")[1];
+
+            var ht = new HtmlDocument();
+            ht.LoadHtml(table.InnerHtml);
+
+            table = ht.DocumentNode;
+
+            for (var i = 0; i < 10; i++)
+            {
+                try
+                {
+                    if (table.SelectNodes("//tbody")[i] == null) { continue; }
+                }
+                catch
+                {
+                    continue;
+                }
+
+                var tbody = table.SelectNodes("//tbody")[i];
+
+
+
+                var tbodyhtml = new HtmlDocument();
+                tbodyhtml.LoadHtml(tbody.InnerHtml);
+
+                HtmlNode tb = tbodyhtml.DocumentNode;
+
+                foreach (var teamrow in tb.QuerySelectorAll(".team-row"))
+                {
+                    var Match = new Models.Match();
+
+                    //Date
+                    var date = long.Parse(teamrow.ChildNodes["td"].ChildNodes["span"].Attributes["data-unix"].Value);
+                    Match.date = DateTimeFromUnixTimestampMillis(date);
+
+                    var K = new HtmlDocument();
+                    K.LoadHtml(teamrow.InnerHtml);
+
+                    var s = K.DocumentNode;
+
+                    var teamcell = s.SelectNodes("//td[@class='team-center-cell']");
+
+                    //Team 1 name
+                    Match.team1name = teamcell[0].ChildNodes["div"].ChildNodes["a"].InnerText;
+
+                    //team 1 id 
+                    Match.team1id = int.Parse(teamcell[0].ChildNodes["div"].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+
+                    //team 1 icon url
+                    Match.team1iconurl = teamcell[0].ChildNodes["div"].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
+
+                    //team 2 name
+                    Match.team2name = teamcell[0].ChildNodes[5].ChildNodes["a"].InnerText;
+
+                    //team 2 id
+                    Match.team2id = int.Parse(teamcell[0].ChildNodes[5].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+
+                    //team 2 icon url
+                    Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
+
+
+                    //team 1 score
+                    Match.team1Score = int.Parse(teamcell[0].ChildNodes[3].ChildNodes[0].InnerText);
+
+                    //team 2 score
+                    Match.team2Score = int.Parse(teamcell[0].ChildNodes[3].ChildNodes[2].InnerText);
+
+
+                    MatchList.Add(Match);
+                }
+
+
+
+            }
+            return MatchList;
         }
 
     }
