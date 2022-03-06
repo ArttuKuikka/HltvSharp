@@ -220,6 +220,9 @@ namespace HltvSharp.Parsing
 
                     var teamcell = s.SelectNodes("//td[@class='team-center-cell']");
 
+                    //id
+                    Match.id = int.Parse(teamrow.QuerySelector(".stats-button-cell").FirstChild.Attributes["href"].Value.Split('/')[3]);
+
                     //Team 1 name
                     Match.team1name = teamcell[0].ChildNodes["div"].ChildNodes["a"].InnerText;
 

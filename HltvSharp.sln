@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HltvSharp", "HltvSharp\HltvSharp.csproj", "{65EDAD4B-6CA1-4168-B5F8-A80BE23C91D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HltvSharpTest", "HltvSharpTest\HltvSharpTest.csproj", "{AAD6F787-ADC8-47C7-A13A-0CCB0C58261E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{65EDAD4B-6CA1-4168-B5F8-A80BE23C91D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65EDAD4B-6CA1-4168-B5F8-A80BE23C91D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65EDAD4B-6CA1-4168-B5F8-A80BE23C91D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAD6F787-ADC8-47C7-A13A-0CCB0C58261E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAD6F787-ADC8-47C7-A13A-0CCB0C58261E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAD6F787-ADC8-47C7-A13A-0CCB0C58261E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAD6F787-ADC8-47C7-A13A-0CCB0C58261E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -123,10 +123,13 @@ namespace HltvSharp.Parsing
                     continue;
 
                 Demo demo = new Demo();
-                string demoDownloadUrl = "https://www.hltv.org" + demoNode.QuerySelector("a").Attributes["href"].Value;
-                demo.Name = demoNode.QuerySelector("a").InnerText;
-                demo.Url = GetDemoDirectDownloadUrl(demoDownloadUrl);
-                demos.Add(demo);
+               if(demoNode.FirstChild.Name == "a")
+                {
+                    string demoDownloadUrl = "https://www.hltv.org" + demoNode.FirstChild.Attributes["href"].Value;
+                    demo.Name = demoNode.QuerySelector("a").InnerText;
+                    demo.Url = GetDemoDirectDownloadUrl(demoDownloadUrl);
+                    demos.Add(demo);
+                }
             }
             model.Demos = demos.ToArray();
 

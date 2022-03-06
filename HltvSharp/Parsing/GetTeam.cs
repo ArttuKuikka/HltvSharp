@@ -45,13 +45,17 @@ namespace HltvSharp.Parsing
             team.Id = int.Parse(document.SelectNodes("//link[@rel='canonical']")[0].Attributes["href"].Value.Split('/')[4]);
 
             //Team stats
-            var profileteamstats = document.SelectNodes("//div[@class='profile-team-stat']");
+            var profileteamstats = document.QuerySelectorAll(".profile-team-stat").ToArray();
 
             //WorldRanking
-            team.WorldRank = int.Parse(profileteamstats[0].ChildNodes["span"].ChildNodes["a"].InnerText.Replace("#", string.Empty));
+            if (int.TryParse(profileteamstats[0].ChildNodes["span"].InnerText.Replace("#", string.Empty), out var rank))
+            {
+                team.WorldRank = rank;
+            }
+            
 
             //AveragePlayerAge
-            if (profileteamstats[2] != null)
+            if (profileteamstats.ElementAtOrDefault(2) != null)
             {
                 if (profileteamstats[2].InnerText.Contains("Average player age"))
                 {
@@ -59,11 +63,14 @@ namespace HltvSharp.Parsing
                 }
             }
 
-            //
-            team.winRateProcentage = double.Parse(document.SelectNodes("//div[@class='highlighted-stat']")[1].ChildNodes["div"].InnerText.Replace("%", String.Empty).Replace(".", ","));
+            //winrate
+            if(double.TryParse(document.SelectNodes("//div[@class='highlighted-stat']")[1].ChildNodes["div"].InnerText.Replace("%", String.Empty).Replace(".", ","), out var winrate))
+            {
+                team.winRateProcentage = winrate;
+            }
 
             //Coach
-            if (profileteamstats[3] != null)
+            if (profileteamstats.ElementAtOrDefault(3) != null)
             {
                 if (profileteamstats[3].InnerText.Contains("Coach"))
                 {
@@ -83,7 +90,7 @@ namespace HltvSharp.Parsing
             }
 
 
-            Console.WriteLine(team);
+            
 
             team.Players = GetPlayers(document);
 
@@ -97,6 +104,11 @@ namespace HltvSharp.Parsing
         private static List<Player> GetPlayers(HtmlNode document)
         {
             var PlayerList = new List<Player>();
+
+            if(!document.InnerHtml.Contains("table-container players-table"))
+            {
+                return null;
+            }
 
             var table = document.SelectNodes("//table[@class='table-container players-table']")[0];
             var ht = new HtmlDocument();
@@ -232,27 +244,35 @@ namespace HltvSharp.Parsing
     private static List<Match> GetRecentMatches(HtmlNode document)
     {
 
-        var MatchList = new List<Match>();
+            if (!document.InnerHtml.Contains("table-container match-table"))
+            {
+                return null;
+            }
+            var MatchList = new List<Match>();
 
-        var table = document.SelectNodes("//table[@class='table-container match-table']")[1];
+            var tablearray = document.SelectNodes("//table[@class='table-container match-table']");
+
+            if(tablearray.ElementAtOrDefault(1) == null) { return null; }
+
+            var table = tablearray[1];
 
             var ht = new HtmlDocument();
             ht.LoadHtml(table.InnerHtml);
 
             table = ht.DocumentNode;
 
-        for (var i = 0; i < 10; i++)
-        {
-            try
+            for (var i = 0; i < 10; i++)
             {
-                if (table.SelectNodes("//tbody")[i] == null) { continue; }
-            }
-            catch
-            {
-                continue;
-            }
+                try
+                {
+                    if (table.SelectNodes("//tbody")[i] == null) { continue; }
+                }
+                catch
+                {
+                    continue;
+                }
 
-            var tbody = table.SelectNodes("//tbody")[i];
+                var tbody = table.SelectNodes("//tbody")[i];
 
                 
 

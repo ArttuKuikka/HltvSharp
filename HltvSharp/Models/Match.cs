@@ -8,6 +8,7 @@ namespace HltvSharp.Models
     {
         
         public DateTime date { get; set; }
+        public int id { get; set; }
         public string team1name { get; set; }
         public string team2name { get; set; }
 
