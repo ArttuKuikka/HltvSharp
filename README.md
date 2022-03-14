@@ -3,6 +3,8 @@
 
 # HltvSharp
 
+# Nuget Package https://www.nuget.org/packages/HltvSharp/
+
 Hltv is a C# api for getting Hltv info straight from hltv.org. HltvSharp uses mostly Html Agility Pack for parsing the site info and as of 14.3.2022 it should work correctly but i you find something wrong with it open a new issue or message me on discord Arttu#6180.
 
 
