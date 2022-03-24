@@ -150,13 +150,20 @@ namespace HltvSharp.Parsing
                     Match.team1iconurl = teamcell[0].ChildNodes["div"].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
 
                     //team 2 name
-                    Match.team2name = teamcell[0].ChildNodes[5].ChildNodes["a"].InnerText;
+                    Match.team2name = teamcell[0].ChildNodes[5].ChildNodes[1].InnerText;
 
                     //team 2 id
-                    Match.team2id = int.Parse(teamcell[0].ChildNodes[5].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+                    if(teamcell[0].ChildNodes[5].ChildNodes["a"] != null)
+                    {
+                        if(teamcell[0].ChildNodes[5].ChildNodes["a"].Attributes["href"] != null)
+                        {
+                            Match.team2id = int.Parse(teamcell[0].ChildNodes[5].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+                        }
+                    }
+                    
 
                     //team 2 icon url
-                    Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
+                    Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["img"].Attributes["src"].Value;
 
 
 

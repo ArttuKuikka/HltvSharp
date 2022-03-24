@@ -4,12 +4,12 @@ var text = "ence";//Console.ReadLine();
 var Search = new HltvSharp.Search();
 var res = await Search.Teams(text);
 
-var t = HltvSharp.Parsing.HltvParser.GetTeam(res[0].Id);
-Console.WriteLine(t.Result.Name);
-Console.WriteLine(t.Result.Id);
-Console.WriteLine(t.Result.WorldRank);
-Console.WriteLine(t.Result.Players[0].Id);
-var p = HltvSharp.Parsing.HltvParser.GetPlayer(t.Result.Players[0].Id);
-Console.WriteLine(p.Result.Name);
-var m = HltvSharp.Parsing.HltvParser.GetMatch(2354933);
-Console.WriteLine(m.Result.Team1.Name);
+var t = await HltvSharp.Parsing.HltvParser.GetTeam(res[0].Id);
+Console.WriteLine(t.Name);
+foreach(var test in t.RecentMatches)
+{
+    Console.WriteLine(test.id);
+    Console.WriteLine(test.team1name);
+    Console.WriteLine(test.team1id);
+    Console.WriteLine(test.team2iconurl);
+}

@@ -135,7 +135,7 @@ namespace HltvSharp.Parsing
                 Player.Id = int.Parse(PlayerCell.ChildNodes["td"].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
 
                 //name
-                Player.Name = PlayerCell.SelectNodes("//img[@class='playerBox-bodyshot']")[0].Attributes["title"].Value;
+                Player.Name = PlayerCell.SelectNodes("//img[@class='playerBox-bodyshot']")[0].Attributes["title"].Value; //voi olla myös playersBox-img-wrapper
 
                 //Player image
                 Player.playerImgUrl = PlayerCell.SelectNodes("//img[@class='playerBox-bodyshot']")[0].Attributes["src"].Value;
@@ -197,6 +197,19 @@ namespace HltvSharp.Parsing
                 {
                     var Match = new Match();
 
+                    if(teamrow.QuerySelector(".matchpage-button-cell") == null)
+                    {
+                        var id2 = teamrow.QuerySelector(".stats-button-cell").ChildNodes["a"].Attributes["href"].Value.Split('/')[2];
+                        Match.id = int.Parse(id2);
+                    }
+                    else
+                    {
+                        var id2 = teamrow.QuerySelector(".matchpage-button-cell").ChildNodes["a"].Attributes["href"].Value.Split('/')[2];
+                        Match.id = int.Parse(id2);
+                    }
+
+                    
+
                     //Date
                     var date = long.Parse(teamrow.ChildNodes["td"].ChildNodes["span"].Attributes["data-unix"].Value);
                     Match.date = DateTimeFromUnixTimestampMillis(date);
@@ -218,13 +231,31 @@ namespace HltvSharp.Parsing
                     Match.team1iconurl = teamcell[0].ChildNodes["div"].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
 
                     //team 2 name
-                    Match.team2name = teamcell[0].ChildNodes[5].ChildNodes["a"].InnerText;
+                    Match.team2name = teamcell[0].ChildNodes[5].ChildNodes[1].InnerText;
 
                     //team 2 id
-                    Match.team2id = int.Parse(teamcell[0].ChildNodes[5].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
+                    if (teamcell[0].ChildNodes[5].ChildNodes["a"] != null)
+                    {
+                        if (teamcell[0].ChildNodes[5].ChildNodes["a"].Attributes["href"] != null)
+                        {
+                            int.TryParse(teamcell[0].ChildNodes[5].ChildNodes["a"].Attributes["href"].Value.Split('/')[2], out var id);
+                            Match.team2id = id;
+                        }
+                    }
+
 
                     //team 2 icon url
-                    Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
+                   
+
+                    if(teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["a"] == null)
+                    {
+                        Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["img"].Attributes["src"].Value;
+                    }
+                    else
+                    {
+                        Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
+                    }
+                    
 
 
 
@@ -252,7 +283,7 @@ namespace HltvSharp.Parsing
 
             var tablearray = document.SelectNodes("//table[@class='table-container match-table']");
 
-            if(tablearray.ElementAtOrDefault(1) == null) { return null; }
+            if (tablearray.ElementAtOrDefault(1) == null) { return null; }
 
             var table = tablearray[1];
 
@@ -284,6 +315,9 @@ namespace HltvSharp.Parsing
             foreach (var teamrow in tb.QuerySelectorAll(".team-row"))
             {
                 var Match = new Match();
+
+                var id = teamrow.QuerySelector(".stats-button-cell").ChildNodes["a"].Attributes["href"].Value.Split('/')[2];
+                    Match.id = int.Parse(id);
 
                 //Date
                 var date = long.Parse(teamrow.ChildNodes["td"].ChildNodes["span"].Attributes["data-unix"].Value);
