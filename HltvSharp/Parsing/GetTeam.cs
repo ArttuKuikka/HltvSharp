@@ -135,10 +135,33 @@ namespace HltvSharp.Parsing
                 Player.Id = int.Parse(PlayerCell.ChildNodes["td"].ChildNodes["a"].Attributes["href"].Value.Split('/')[2]);
 
                 //name
-                Player.Name = PlayerCell.SelectNodes("//img[@class='playerBox-bodyshot']")[0].Attributes["title"].Value; //voi olla myös playersBox-img-wrapper
+                var name = "";
+
+              
+                name = PlayerCell.SelectNodes("//img")[0].Attributes["title"].Value;
+                
+                
+                
+               
+                
+                if(name == null || name == "")
+                {
+                    throw new Exception("Player name was null");
+                }
+                Player.Name = name; 
 
                 //Player image
-                Player.playerImgUrl = PlayerCell.SelectNodes("//img[@class='playerBox-bodyshot']")[0].Attributes["src"].Value;
+                var imgurl = "";
+
+                
+                    imgurl = PlayerCell.SelectNodes("//img")[0].Attributes["src"].Value;
+                
+
+                if (imgurl == null || imgurl == "")
+                {
+                    throw new Exception("Player Image url was null");
+                }
+                Player.playerImgUrl = imgurl;
 
                 //Country
                 Player.Country = PlayerCell.SelectNodes("//img[@class='gtSmartphone-only flag']")[0].Attributes["title"].Value;
@@ -153,7 +176,11 @@ namespace HltvSharp.Parsing
                 Player.mapsPlayed = int.Parse(PlayerCell.SelectNodes("//td")[3].ChildNodes["div"].InnerText);
 
                 //Rating
-                Player.rating = double.Parse(PlayerCell.SelectNodes("//td")[4].ChildNodes["div"].InnerText.Replace(".", ","));
+                if(PlayerCell.SelectNodes("//td")[4].ChildNodes["div"].InnerText != "-")
+                {
+                    Player.rating = double.Parse(PlayerCell.SelectNodes("//td")[4].ChildNodes["div"].InnerText.Replace(".", ","));
+                }
+                
 
                 PlayerList.Add(Player);
             }

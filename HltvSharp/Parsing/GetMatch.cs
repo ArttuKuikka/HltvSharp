@@ -201,6 +201,18 @@ namespace HltvSharp.Parsing
             }
             model.Team2Players = team2Players.ToArray();
 
+            //playermatchstats
+
+            var tbodyarray = document.QuerySelectorAll(".table .totalstats");
+
+            var team1object = tbodyarray.Where(x => x.InnerHtml.Contains(team1.Id.ToString()));
+            var team2object = tbodyarray.Where(x => x.InnerHtml.Contains(team2.Id.ToString()));
+
+		//Tee proo
+
+            Console.WriteLine(tbodyarray);
+            
+
             return model;
         }
 
