@@ -14,7 +14,7 @@ namespace HltvSharp.Parsing
 {
     public static partial class HltvParser
     {
-        
+
         public static Task<Team> GetTeam(int teamid, WebProxy proxy = null)
         {
             return FetchPage($"team/{teamid}/-", (response) => GetInfoParse(response, teamid), proxy);
@@ -52,7 +52,7 @@ namespace HltvSharp.Parsing
             {
                 team.WorldRank = rank;
             }
-            
+
 
             //AveragePlayerAge
             if (profileteamstats.ElementAtOrDefault(2) != null)
@@ -64,7 +64,7 @@ namespace HltvSharp.Parsing
             }
 
             //winrate
-            if(double.TryParse(document.SelectNodes("//div[@class='highlighted-stat']")[1].ChildNodes["div"].InnerText.Replace("%", String.Empty).Replace(".", ","), out var winrate))
+            if (double.TryParse(document.SelectNodes("//div[@class='highlighted-stat']")[1].ChildNodes["div"].InnerText.Replace("%", String.Empty).Replace(".", ","), out var winrate))
             {
                 team.winRateProcentage = winrate;
             }
@@ -90,7 +90,7 @@ namespace HltvSharp.Parsing
             }
 
 
-            
+
 
             team.Players = GetPlayers(document);
 
@@ -105,7 +105,7 @@ namespace HltvSharp.Parsing
         {
             var PlayerList = new List<Player>();
 
-            if(!document.InnerHtml.Contains("table-container players-table"))
+            if (!document.InnerHtml.Contains("table-container players-table"))
             {
                 return null;
             }
@@ -123,7 +123,7 @@ namespace HltvSharp.Parsing
 
             HtmlNode tb = tbodyhtml.DocumentNode;
 
-            foreach (var PlayerCellFE in tb.SelectNodes("//tr")) 
+            foreach (var PlayerCellFE in tb.SelectNodes("//tr"))
             {
                 var Player = new Player();
 
@@ -137,25 +137,25 @@ namespace HltvSharp.Parsing
                 //name
                 var name = "";
 
-              
+
                 name = PlayerCell.SelectNodes("//img")[0].Attributes["title"].Value;
-                
-                
-                
-               
-                
-                if(name == null || name == "")
+
+
+
+
+
+                if (name == null || name == "")
                 {
                     throw new Exception("Player name was null");
                 }
-                Player.Name = name; 
+                Player.Name = name;
 
                 //Player image
                 var imgurl = "";
 
-                
-                    imgurl = PlayerCell.SelectNodes("//img")[0].Attributes["src"].Value;
-                
+
+                imgurl = PlayerCell.SelectNodes("//img")[0].Attributes["src"].Value;
+
 
                 if (imgurl == null || imgurl == "")
                 {
@@ -176,11 +176,11 @@ namespace HltvSharp.Parsing
                 Player.mapsPlayed = int.Parse(PlayerCell.SelectNodes("//td")[3].ChildNodes["div"].InnerText);
 
                 //Rating
-                if(PlayerCell.SelectNodes("//td")[4].ChildNodes["div"].InnerText != "-")
+                if (PlayerCell.SelectNodes("//td")[4].ChildNodes["div"].InnerText != "-")
                 {
                     Player.rating = double.Parse(PlayerCell.SelectNodes("//td")[4].ChildNodes["div"].InnerText.Replace(".", ","));
                 }
-                
+
 
                 PlayerList.Add(Player);
             }
@@ -192,39 +192,39 @@ namespace HltvSharp.Parsing
         private static List<Match> GetUpcomingMatches(HtmlNode document)
         {
 
+            if (!document.InnerHtml.Contains("table-container match-table"))
+            {
+                return null;
+            }
             var MatchList = new List<Match>();
 
-            var table = document.SelectNodes("//table[@class='table-container match-table']")[0];
-            var ht = new HtmlDocument();
-            ht.LoadHtml(table.InnerHtml);
 
-            table = ht.DocumentNode;
-
-            for (var i = 0; i < 10; i++)
+            //get the table
+            HtmlNode table = null;
+            var textnode = document.SelectNodes("//h2[@class='standard-headline']");
+            var up = textnode.Where(test => test.InnerText.Contains("Upcoming matches"));
+            if (up != null)
             {
-                try
+                var rec = up.First().NextSibling.NextSibling;
+                if (rec.Name == "table")
                 {
-                    if (table.SelectNodes("//tbody")[i] == null) { continue; }
+                    table = rec;
                 }
-                catch
+                else
                 {
-                    continue;
+                    return null;
                 }
+            }
+            else
+            {
+                return null;
+            }
 
-                var tbody = table.SelectNodes("//tbody")[i];
-
-                
-
-                var tbodyhtml = new HtmlDocument();
-                tbodyhtml.LoadHtml(tbody.InnerHtml);
-
-                HtmlNode tb = tbodyhtml.DocumentNode;
-
-                foreach (var teamrow in tb.QuerySelectorAll(".team-row"))
+            foreach (var teamrow in table.QuerySelectorAll(".team-row"))
                 {
                     var Match = new Match();
 
-                    if(teamrow.QuerySelector(".matchpage-button-cell") == null)
+                    if (teamrow.QuerySelector(".matchpage-button-cell") == null)
                     {
                         var id2 = teamrow.QuerySelector(".stats-button-cell").ChildNodes["a"].Attributes["href"].Value.Split('/')[2];
                         Match.id = int.Parse(id2);
@@ -235,7 +235,7 @@ namespace HltvSharp.Parsing
                         Match.id = int.Parse(id2);
                     }
 
-                    
+
 
                     //Date
                     var date = long.Parse(teamrow.ChildNodes["td"].ChildNodes["span"].Attributes["data-unix"].Value);
@@ -272,9 +272,9 @@ namespace HltvSharp.Parsing
 
 
                     //team 2 icon url
-                   
 
-                    if(teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["a"] == null)
+
+                    if (teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["a"] == null)
                     {
                         Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["img"].Attributes["src"].Value;
                     }
@@ -282,7 +282,7 @@ namespace HltvSharp.Parsing
                     {
                         Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["a"].ChildNodes["img"].Attributes["src"].Value;
                     }
-                    
+
 
 
 
@@ -292,15 +292,15 @@ namespace HltvSharp.Parsing
 
 
 
-            }
+            
             return MatchList;
         }
 
 
-    
 
-    private static List<Match> GetRecentMatches(HtmlNode document)
-    {
+
+        private static List<Match> GetRecentMatches(HtmlNode document)
+        {
 
             if (!document.InnerHtml.Contains("table-container match-table"))
             {
@@ -308,43 +308,35 @@ namespace HltvSharp.Parsing
             }
             var MatchList = new List<Match>();
 
-            var tablearray = document.SelectNodes("//table[@class='table-container match-table']");
 
-            if (tablearray.ElementAtOrDefault(1) == null) { return null; }
-
-            var table = tablearray[1];
-
-            var ht = new HtmlDocument();
-            ht.LoadHtml(table.InnerHtml);
-
-            table = ht.DocumentNode;
-
-            for (var i = 0; i < 10; i++)
+            //get the table
+            HtmlNode table = null;
+            var textnode = document.SelectNodes("//h2[@class='standard-headline']");
+            var up = textnode.Where(test => test.InnerText.Contains("Recent results"));
+            if (up != null)
             {
-                try
+                var rec = up.First().NextSibling.NextSibling;
+                if (rec.Name == "table")
                 {
-                    if (table.SelectNodes("//tbody")[i] == null) { continue; }
+                    table = rec;
                 }
-                catch
+                else
                 {
-                    continue;
+                    return null;
                 }
+            }
+            else
+            {
+                return null;
+            }
 
-                var tbody = table.SelectNodes("//tbody")[i];
 
-                
-
-            var tbodyhtml = new HtmlDocument();
-            tbodyhtml.LoadHtml(tbody.InnerHtml);
-
-            HtmlNode tb = tbodyhtml.DocumentNode;
-
-            foreach (var teamrow in tb.QuerySelectorAll(".team-row"))
+            foreach (var teamrow in table.QuerySelectorAll(".team-row"))
             {
                 var Match = new Match();
 
                 var id = teamrow.QuerySelector(".stats-button-cell").ChildNodes["a"].Attributes["href"].Value.Split('/')[2];
-                    Match.id = int.Parse(id);
+                Match.id = int.Parse(id);
 
                 //Date
                 var date = long.Parse(teamrow.ChildNodes["td"].ChildNodes["span"].Attributes["data-unix"].Value);
@@ -388,11 +380,11 @@ namespace HltvSharp.Parsing
 
 
 
+
+            return MatchList;
         }
-        return MatchList;
+
+
+
     }
-
-
-
-}
 }

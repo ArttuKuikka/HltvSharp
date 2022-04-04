@@ -204,11 +204,16 @@ namespace HltvSharp.Parsing
             //playermatchstats
 
             var tbodyarray = document.QuerySelectorAll(".table .totalstats");
+            if(tbodyarray == null) { model.Team1PlayerStats = null; model.Team2PlayerStats = null; }
+            else
+            {
+                var team1tbody = tbodyarray.First(); // toimii ehk pitäis olla 0 ja 1
+                var team2tbody = tbodyarray.Last();
 
-            var team1object = tbodyarray.Where(x => x.InnerHtml.Contains(team1.Id.ToString()));
-            var team2object = tbodyarray.Where(x => x.InnerHtml.Contains(team2.Id.ToString()));
+                
+            }
 
-		//Tee proo
+           
 
             Console.WriteLine(tbodyarray);
             
