@@ -19,8 +19,8 @@ namespace HltvSharp.Models
         public Demo[] Demos { get; set; }
         public Player[] Team1Players { get; set; }
         public Player[] Team2Players { get; set; }
-        public MatchStat Team1PlayerStats { get; set; }
-        public MatchStat Team2PlayerStats { get; set; }
+        public List<MatchStat> Team1PlayerStats { get; set; }
+        public List<MatchStat> Team2PlayerStats { get; set; }
 
     }
 }

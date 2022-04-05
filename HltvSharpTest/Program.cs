@@ -11,5 +11,5 @@ foreach(var match in t.RecentMatches)
     Console.WriteLine(match.date);
 }
 
-//var m = await HltvSharp.Parsing.HltvParser.GetMatch(t.RecentMatches[0].id);
-//Console.WriteLine(m.Id);
+var m = await HltvSharp.Parsing.HltvParser.GetMatch(2355455);
+Console.WriteLine(m.Id);
