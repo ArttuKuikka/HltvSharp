@@ -17,10 +17,10 @@ namespace HltvSharp
             var Search = new HltvSharp.Search();
             var id = Search.Players("snappi");
 
-            var task = HltvParser.GetPlayer(id.Result[0].id);
-            task.Wait();
+            var task = await HltvParser.GetPlayer(id.Result[0].id);
             
-            Console.WriteLine(task.Result.Name);
+            
+            Console.WriteLine(task.Name);
             
 
            
