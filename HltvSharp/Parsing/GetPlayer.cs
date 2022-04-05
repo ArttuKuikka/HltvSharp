@@ -163,7 +163,15 @@ namespace HltvSharp.Parsing
                     
 
                     //team 2 icon url
-                    Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["img"].Attributes["src"].Value;
+                    if(teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["img"] != null)
+                    {
+                        Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].ChildNodes["img"].Attributes["src"].Value;
+                    }
+                    else
+                    {
+                        Match.team2iconurl = teamcell[0].ChildNodes[5].ChildNodes["span"].FirstChild.ChildNodes["img"].Attributes["src"].Value;
+                    }
+                    
 
 
 

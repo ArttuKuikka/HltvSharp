@@ -11,7 +11,7 @@
     <Description>An unofficial C# API for scraping data from hltv.org</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageIcon>logo.png</PackageIcon>
-    <Version>1.6</Version>
+    <Version>1.8</Version>
   </PropertyGroup>
 
   <ItemGroup>
