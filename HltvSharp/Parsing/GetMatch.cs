@@ -201,6 +201,117 @@ namespace HltvSharp.Parsing
             }
             model.Team2Players = team2Players.ToArray();
 
+            //playermatchstats
+
+
+            HtmlNode table = null;
+            HtmlNode table2 = null;
+            var textnode = document.SelectNodes("//div[@class='headline']");
+            if(textnode != null)
+            {
+                var up = textnode.Where(test => test.InnerText.Contains("Match stats"));
+
+                if (up != null)
+                {
+                    var rec = up.First().ParentNode.NextSibling.NextSibling.NextSibling.NextSibling.ChildNodes[1];
+                    if (rec.Name == "table")
+                    {
+                        table = rec;
+                    }
+                    var rec2 = up.First().ParentNode.NextSibling.NextSibling.NextSibling.NextSibling.ChildNodes[7];
+                    if (rec2.Name == "table")
+                    {
+                        table2 = rec2;
+                    }
+
+                }
+
+                if (table != null)
+                {
+                    var rowlist = new List<MatchStat>();
+                    foreach (var row in table.QuerySelectorAll("tr").Skip(1))
+                    {
+                        var stat = new MatchStat();
+
+                        //playerID
+                        var pid = row.ChildNodes["td"].ChildNodes["div"].ChildNodes["a"].Attributes["href"].Value.Split('/')[2];
+                        stat.PlayerID = int.Parse(pid);
+
+
+
+                        //PlayerName
+                        stat.PlayerName = row.ChildNodes["td"].ChildNodes["div"].ChildNodes["a"].ChildNodes["div"].InnerText;
+
+                        //K-D
+                        stat.KD = row.QuerySelector(".kd").InnerText;
+
+                        // +/-
+                        var pm = row.QuerySelector(".plus-minus").InnerText;
+                        stat.plusminus = int.Parse(pm);
+
+                        //ADR
+                        var adr = row.QuerySelector(".adr").InnerText;
+                        stat.ADR = decimal.Parse(adr.Replace(".", ","));
+
+                        //Kast%
+                        var kast = row.QuerySelector(".kast").InnerText;
+                        stat.KastProcentage = decimal.Parse(kast.Replace("%", string.Empty).Replace(".", ","));
+
+                        //Rating
+                        var r = row.QuerySelector(".rating").InnerText;
+                        stat.Rating = decimal.Parse(r.Replace(".", ","));
+
+
+                        rowlist.Add(stat);
+                    }
+
+                    model.Team1PlayerStats = rowlist;
+                }
+
+                if (table2 != null)
+                {
+                    var rowlist2 = new List<MatchStat>();
+                    foreach (var row in table2.QuerySelectorAll("tr").Skip(1))
+                    {
+                        var stat = new MatchStat();
+
+                        //playerID
+                        var pid = row.ChildNodes["td"].ChildNodes["div"].ChildNodes["a"].Attributes["href"].Value.Split('/')[2];
+                        stat.PlayerID = int.Parse(pid);
+
+
+
+                        //PlayerName
+                        stat.PlayerName = row.ChildNodes["td"].ChildNodes["div"].ChildNodes["a"].ChildNodes["div"].InnerText;
+
+                        //K-D
+                        stat.KD = row.QuerySelector(".kd").InnerText;
+
+                        // +/-
+                        var pm = row.QuerySelector(".plus-minus").InnerText;
+                        stat.plusminus = int.Parse(pm);
+
+                        //ADR
+                        var adr = row.QuerySelector(".adr").InnerText;
+                        stat.ADR = decimal.Parse(adr.Replace(".", ","));
+
+                        //Kast%
+                        var kast = row.QuerySelector(".kast").InnerText;
+                        stat.KastProcentage = decimal.Parse(kast.Replace("%", string.Empty).Replace(".", ","));
+
+                        //Rating
+                        var r = row.QuerySelector(".rating").InnerText;
+                        stat.Rating = decimal.Parse(r.Replace(".", ","));
+
+
+                        rowlist2.Add(stat);
+                    }
+                    model.Team2PlayerStats = rowlist2;
+                }
+
+            }
+
+
             return model;
         }
 
