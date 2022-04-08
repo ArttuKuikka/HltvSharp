@@ -25,3 +25,4 @@ using System.Net;
 //var news = await HltvSharp.Parsing.HltvParser.GetNews();
 
 var article = await HltvSharp.Parsing.HltvParser.GetArticle(33550);
+File.WriteAllText("Testijson.json", article.ArticleBody.ToString());
