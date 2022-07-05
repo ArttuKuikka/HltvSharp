@@ -326,9 +326,9 @@ namespace HltvSharp.Parsing
 
             try
             {
-                using (request.GetResponse() as HttpWebResponse)
+                using (var reg = request.GetResponse() as HttpWebResponse)
                 {
-
+                   location = reg.Headers["Location"];
                 }
             }
             catch (WebException e)

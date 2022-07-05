@@ -7,13 +7,15 @@ var text = "ence";//Console.ReadLine();
 
 var Search = new HltvSharp.Search();
 var res = await Search.Teams(text);
-var res2 = await Search.Teams("havu");
+
 
 var t = await HltvSharp.Parsing.HltvParser.GetTeam(res[0].Id);
 Console.WriteLine(t.Name);
 
-var t2 = await HltvSharp.Parsing.HltvParser.GetTeam(res2[0].Id);
-Console.WriteLine(t2.Name);
+var peli = await HltvSharp.Parsing.HltvParser.GetMatch(2357202);
+var k = peli.Demos.FirstOrDefault().Url;
+Console.WriteLine(k);
+
 ////foreach(var match in t.RecentMatches)
 ////{
 ////    Console.WriteLine(match.date);
