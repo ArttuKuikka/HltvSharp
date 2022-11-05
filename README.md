@@ -1,3 +1,6 @@
+# !!!UNMAINTAINED!!!
+
+
 ![logo](https://raw.githubusercontent.com/ArttuKuikka/HltvSharp/master/github_hltvsharp_logo.png)
 
 
