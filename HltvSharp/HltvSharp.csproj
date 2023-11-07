@@ -18,6 +18,7 @@
     <PackageReference Include="Fizzler.Systems.HtmlAgilityPack" Version="1.2.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="PuppeteerSharp" Version="12.0.0" />
   </ItemGroup>
 
   <ItemGroup>

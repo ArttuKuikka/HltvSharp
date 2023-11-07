@@ -266,11 +266,11 @@ namespace HltvSharp
 
         private async Task<JToken> GetSearchResults(string SearchQuery)
         {
-            var url = "https://www.hltv.org/search?term=" + SearchQuery;
+            var url = "search?term=" + SearchQuery;
 
-            using var client = new HttpClient();
+           
 
-            var content = await client.GetStringAsync(url);
+            var content = await Parsing.HltvParser.FetchPage(url);
             JArray results = JArray.Parse(content);
             var result = results[0];
 

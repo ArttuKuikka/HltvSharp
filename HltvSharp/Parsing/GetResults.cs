@@ -14,15 +14,16 @@ namespace HltvSharp.Parsing
 {
     public static partial class HltvParser
     {
-        public static Task<List<MatchResult>> GetMatchResults(int offset = 0, WebProxy proxy = null)
+        public static async Task<List<MatchResult>> GetMatchResults(int offset = 0)
         {
-            return FetchPage("results?offset=" + offset, ParseResultsPage, proxy);
+            var html = await FetchPage("results?offset=" + offset);
+            return ParseResultsPage(html);
         }
 
-        private static List<MatchResult> ParseResultsPage(Task<HttpResponseMessage> response)
+        private static List<MatchResult> ParseResultsPage(string response)
         {
-            var content = response.Result.Content;
-            string htmlContent = content.ReadAsStringAsync().Result;
+            
+            string htmlContent = response;
 
             HtmlDocument html = new HtmlDocument();
             html.LoadHtml(htmlContent);

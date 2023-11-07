@@ -14,16 +14,23 @@ namespace HltvSharp
     {
         static async System.Threading.Tasks.Task Main(string[] args)
         {
-            var Search = new HltvSharp.Search();
-            var id = Search.Players("snappi");
+			var text = "ence";//Console.ReadLine();
 
-            var task = await HltvParser.GetPlayer(id.Result[0].id);
-            
-            
-            Console.WriteLine(task.Name);
-            
 
-           
-        }
+
+			var Search = new HltvSharp.Search();
+			var res = await Search.Teams(text);
+
+
+			var t = await HltvSharp.Parsing.HltvParser.GetTeam(res[0].Id);
+			Console.WriteLine(t.Name);
+
+			var peli = await HltvSharp.Parsing.HltvParser.GetMatch(2357202);
+			var k = peli.Demos.FirstOrDefault().Url;
+			Console.WriteLine(k);
+
+
+
+		}
     }
 }

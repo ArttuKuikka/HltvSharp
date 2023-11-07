@@ -14,15 +14,16 @@ namespace HltvSharp.Parsing
 {
     public static partial class HltvParser
     {
-        public static Task<Player> GetPlayer(int playerid, WebProxy proxy = null)
+        public static async Task<Player> GetPlayer(int playerid)
         {
-            return FetchPage($"player/{playerid}/-", (response) => GetPlayerParse(response, playerid), proxy);
+            var html = await FetchPage($"player/{playerid}/-");
+            return GetPlayerParse(html, playerid);
         }
-        private static Player GetPlayerParse(Task<HttpResponseMessage> response, int id = 0)
+        private static Player GetPlayerParse(string response, int id = 0)
         {
             //load html
-            var content = response.Result.Content;
-            string htmlContent = content.ReadAsStringAsync().Result;
+
+            string htmlContent = response;
 
             HtmlDocument html = new HtmlDocument();
             html.LoadHtml(htmlContent);

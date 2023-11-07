@@ -15,14 +15,15 @@ namespace HltvSharp.Parsing
 {
     public static partial class HltvParser
     {
-        public static Task<List<RankedTeam>> GetRankings(WebProxy proxy = null)
+        public static async Task<List<RankedTeam>> GetRankings()
         {
-            return FetchPage("ranking/teams/", GetRankingslist, proxy);
+            var html = await FetchPage("ranking/teams/");
+            return GetRankingslist(html);
         }
-        private static List<RankedTeam> GetRankingslist(Task<HttpResponseMessage> response)
+        private static List<RankedTeam> GetRankingslist(string response)
         {
-            var content = response.Result.Content;
-            string htmlContent = content.ReadAsStringAsync().Result;
+
+            string htmlContent = response;
 
             HtmlDocument html = new HtmlDocument();
             html.LoadHtml(htmlContent);
